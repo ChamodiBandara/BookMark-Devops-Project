@@ -1,24 +1,27 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';               // ✅ import cors
-import connectDB from './db.js';
-import authRoutes from "./Route/authRoutes.js"; // make sure folder name is Routes
-
-dotenv.config();
-const app = express();
-
-// Middleware
-app.use(cors());                      // ✅ enable CORS for all origins
-app.use(express.json());              // parse JSON requests
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import connectDB from "./db.js";
 
 // Routes
+import bookmarkRoutes from "./Route/bookmarkRoutes.js";
+import authRoutes from "./Route/authRoutes.js";
+import folderRoutes from "./Route/folderRoutes.js"; // <-- added
+
+dotenv.config();
+connectDB();
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// Routes
+app.use("/api/bookmarks", bookmarkRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/folders", folderRoutes); // <-- added
 
-// Connect DB and Start Server
+app.get("/", (req, res) => res.send("Backend running 🚀"));
+
 const PORT = process.env.PORT || 5000;
-
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
