@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE_FRONTEND = "chamodibandara/bookmark-frontend:latest"
         DOCKER_IMAGE_BACKEND  = "chamodibandara/bookmark-backend:latest"
-        DOCKER_CREDENTIALS    = "docker-hub"
+        DOCKER_CREDENTIALS_ID = "dockerhub"   // 👈 use the exact ID you created
         GIT_REPO              = "https://github.com/ChamodiBandara/BookMark-Devops-Project.git"
     }
 
@@ -29,10 +29,12 @@ pipeline {
 
         stage('Login to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS}", 
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", 
                                                   usernameVariable: 'DOCKER_USER', 
                                                   passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    '''
                 }
             }
         }
@@ -47,7 +49,7 @@ pipeline {
 
     post {
         always {
-            sh 'docker logout'
+            sh 'docker logout || true'
         }
     }
 }
