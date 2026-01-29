@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE_FRONTEND = "chamodibandara/bookmark-frontend:latest"
         DOCKER_IMAGE_BACKEND  = "chamodibandara/bookmark-backend:latest"
-        DOCKER_CREDENTIALS_ID = "dockerhub"   // 👈 use the exact ID you created
+        DOCKER_CREDENTIALS_ID = "dockerhub"  //Docer ID
         GIT_REPO              = "https://github.com/ChamodiBandara/BookMark-Devops-Project.git"
     }
 
