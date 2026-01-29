@@ -9,7 +9,7 @@ import {
   X,
   LogOut,
 } from "lucide-react";
-import API from "../services/API"; // ✅ your axios instance (default export)
+import API from "../Services/api"; // ✅ your axios instance (default export)
 
 const formatDate = (d) => new Date(d).toLocaleDateString();
 
