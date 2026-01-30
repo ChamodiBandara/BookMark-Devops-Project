@@ -22,7 +22,7 @@ const urlHost = (url) => {
   }
 };
 
-// ✅ stable “color dot” per folder (no hardcoding)
+
 const colorClasses = [
   "bg-rose-400",
   "bg-orange-400",
