@@ -4,9 +4,9 @@ pipeline {
     environment {
         DOCKER_IMAGE_FRONTEND = "chamodibandara/bookmark-frontend:latest"
         DOCKER_IMAGE_BACKEND  = "chamodibandara/bookmark-backend:latest"
-        DOCKER_CREDENTIALS_ID = "dockerhub"   // DockerHub credentials ID in Jenkins
+        DOCKER_CREDENTIALS_ID = "dockerhub"
         GIT_REPO              = "https://github.com/ChamodiBandara/BookMark-Devops-Project.git"
-        EC2_SSH_CRED_ID        = "ec2-ssh"     // EC2 SSH key credential ID in Jenkins
+        EC2_SSH_CRED_ID        = "ec2-ssh"
     }
 
     stages {
@@ -52,6 +52,7 @@ pipeline {
                 sshagent(credentials: ["${EC2_SSH_CRED_ID}"]) {
                     sh '''
                         set -e
+                        export ANSIBLE_HOST_KEY_CHECKING=False
                         cd deploy/ansible
                         ansible-playbook -i inventory.ini deploy.yml
                     '''
