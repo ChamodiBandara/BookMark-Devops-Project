@@ -11,6 +11,18 @@
     - name: Install Docker & Compose (required for deployment)
       import_tasks: install-docker.yml
 
+    - name: Check if backend.env exists on controller (Jenkins/WSL)
+      delegate_to: localhost
+      become: false
+      stat:
+        path: "{{ playbook_dir }}/backend.env"
+      register: backend_env_local
+
+    - name: Check if backend.env already exists on server
+      stat:
+        path: "{{ env_dest }}"
+      register: backend_env_remote
+
   tasks:
     - name: Ensure app directory exists
       file:
@@ -24,11 +36,17 @@
         dest: "{{ compose_dest }}"
         mode: "0644"
 
-    - name: Upload backend env file (server secret)
+    - name: Upload backend env file if present locally (manual runs)
       copy:
         src: backend.env
         dest: "{{ env_dest }}"
         mode: "0600"
+      when: backend_env_local.stat.exists
+
+    - name: Fail if no backend.env locally AND none on server
+      fail:
+        msg: "backend.env not found locally (Jenkins) and not found on server at {{ env_dest }}. Create it on the EC2 server."
+      when: (not backend_env_local.stat.exists) and (not backend_env_remote.stat.exists)
 
     - name: Pull latest images and start containers
       shell: |
