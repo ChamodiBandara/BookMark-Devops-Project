@@ -46,7 +46,7 @@ export default function Signup() {
       <form onSubmit={handleSignup} className="bg-white p-8 rounded shadow-md w-96">
         <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
         {message && (
-          <p className={`mb-4 text-center ${success ? "text-green-500" : "text-red-500"}`}>
+          <p className={`mb-4 text-center ${success ? "text-blue-500" : "text-red-500"}`}>
             {message}
           </p>
         )}
