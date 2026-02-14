@@ -22,27 +22,46 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form onSubmit={handleLogin} className="bg-white p-8 rounded shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center">Welcome To Booksy</h2>
+    <div
+      className="flex items-center justify-center min-h-screen bg-cover bg-center relative"
+      style={{
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f')",
+      }}
+    >
+      {/* Dark overlay for better readability */}
+      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+      <form
+        onSubmit={handleLogin}
+        className="relative bg-white p-8 rounded shadow-md w-96 z-10"
+      >
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          Welcome To Booksy
+        </h2>
+
         {message && <p className="text-red-500 mb-4">{message}</p>}
+
         <input
           className="mb-3 w-full p-2 border rounded"
           placeholder="Email"
           type="email"
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
+
         <input
           className="mb-4 w-full p-2 border rounded"
           placeholder="Password"
           type="password"
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
         />
+
         <button className="w-full bg-green-500 text-white p-2 rounded hover:bg-blue-600">
           Login
         </button>
+
         <p className="mt-4 text-center text-gray-600">
           Don't have an account?{" "}
           <Link to="/signup" className="text-blue-500 hover:underline">
