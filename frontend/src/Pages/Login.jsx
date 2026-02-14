@@ -24,7 +24,7 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form onSubmit={handleLogin} className="bg-white p-8 rounded shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Devinee</h2>
         {message && <p className="text-red-500 mb-4">{message}</p>}
         <input
           className="mb-3 w-full p-2 border rounded"
@@ -41,7 +41,7 @@ export default function Login() {
           onChange={e => setPassword(e.target.value)}
         />
         <button className="w-full bg-green-500 text-white p-2 rounded hover:bg-blue-600">
-          Devini
+          Login
         </button>
         <p className="mt-4 text-center text-gray-600">
           Don't have an account?{" "}
