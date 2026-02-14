@@ -41,7 +41,7 @@ export default function Login() {
           onChange={e => setPassword(e.target.value)}
         />
         <button className="w-full bg-green-500 text-white p-2 rounded hover:bg-blue-600">
-          Login
+          Devini
         </button>
         <p className="mt-4 text-center text-gray-600">
           Don't have an account?{" "}
