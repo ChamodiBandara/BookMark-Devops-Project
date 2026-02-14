@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Search,
@@ -22,31 +21,29 @@ const urlHost = (url) => {
   }
 };
 
-
 const colorClasses = [
-  "bg-rose-400",
-  "bg-orange-400",
+  "bg-orange-300",
+  "bg-amber-300",
+  "bg-rose-300",
   "bg-amber-400",
-  "bg-lime-400",
-  "bg-emerald-400",
-  "bg-teal-400",
-  "bg-cyan-400",
-  "bg-sky-400",
-  "bg-blue-400",
-  "bg-indigo-400",
-  "bg-violet-400",
-  "bg-fuchsia-400",
+  "bg-yellow-200",
+  "bg-orange-400",
+  "bg-red-300",
+  "bg-red-400",
+  "bg-yellow-300",
+  "bg-orange-200",
+  "bg-rose-400",
+  "bg-amber-200",
 ];
 
 const hashToIndex = (str) => {
-  // small deterministic hash
   let h = 0;
   for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
   return h % colorClasses.length;
 };
 
 const folderColorClass = (folderId) => {
-  if (!folderId) return "bg-slate-400";
+  if (!folderId) return "bg-slate-300";
   return colorClasses[hashToIndex(String(folderId))];
 };
 
@@ -59,10 +56,8 @@ const flattenTreeToOptions = (tree, depth = 0) => {
   return out;
 };
 
-// ✅ frontend safety: dedupe tree by _id (prevents duplicates even if backend sends duplicates)
 const dedupeTree = (nodes) => {
   const seen = new Set();
-
   const walk = (arr) => {
     const result = [];
     for (const n of arr || []) {
@@ -76,13 +71,11 @@ const dedupeTree = (nodes) => {
     }
     return result;
   };
-
   return walk(nodes || []);
 };
 
 const FolderTree = ({ tree, selectedFolderId, onSelectFolder, onAddFolder }) => {
   const [openMap, setOpenMap] = useState({});
-
   const toggle = (id) => setOpenMap((m) => ({ ...m, [id]: !m[id] }));
 
   const Node = ({ node, depth }) => {
@@ -94,7 +87,7 @@ const FolderTree = ({ tree, selectedFolderId, onSelectFolder, onAddFolder }) => 
       <div>
         <div
           className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition ${
-            isSelected ? "bg-white/10" : "hover:bg-white/5"
+            isSelected ? "bg-white/20" : "hover:bg-white/10"
           }`}
           style={{ paddingLeft: 12 + depth * 12 }}
           onClick={() => onSelectFolder(node._id)}
@@ -118,7 +111,6 @@ const FolderTree = ({ tree, selectedFolderId, onSelectFolder, onAddFolder }) => 
             )}
           </button>
 
-          {/* ✅ colored dot like your previous UI */}
           <span
             className={`w-2.5 h-2.5 rounded-full ${folderColorClass(node._id)} shrink-0`}
           />
@@ -190,7 +182,7 @@ const AddFolderModal = ({ open, onClose, parentFolderId, onCreated }) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 flex items-start justify-center p-6">
-      <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-[#111827] shadow-2xl">
+      <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-[#4a3f35] shadow-2xl">
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
           <h3 className="text-lg font-semibold text-white">
             {parentFolderId ? "Add Subfolder" : "Add Folder"}
@@ -204,7 +196,7 @@ const AddFolderModal = ({ open, onClose, parentFolderId, onCreated }) => {
           <div>
             <label className="text-sm text-white/80 font-medium">Folder name</label>
             <input
-              className="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-orange-400"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Music, Work, Projects"
@@ -213,14 +205,14 @@ const AddFolderModal = ({ open, onClose, parentFolderId, onCreated }) => {
 
           <div className="flex justify-end gap-2 pt-2">
             <button
-              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white"
+              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white"
               onClick={onClose}
               disabled={loading}
             >
               Cancel
             </button>
             <button
-              className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold disabled:opacity-60"
+              className="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold disabled:opacity-60"
               onClick={create}
               disabled={loading}
             >
@@ -233,7 +225,7 @@ const AddFolderModal = ({ open, onClose, parentFolderId, onCreated }) => {
   );
 };
 
-const AddBookmarkModal = ({ open, onClose, folderOptions, onSaved }) => {
+const AddBookModal = ({ open, onClose, folderOptions, onSaved }) => {
   const [form, setForm] = useState({
     title: "",
     url: "",
@@ -269,12 +261,12 @@ const AddBookmarkModal = ({ open, onClose, folderOptions, onSaved }) => {
           .filter(Boolean),
       };
 
-      const { data } = await API.post("/bookmarks", payload);
+      const { data } = await API.post("/books", payload);
       onSaved?.(data);
       onClose();
     } catch (err) {
-      console.error("Create bookmark error:", err.response?.data || err.message);
-      alert(err.response?.data?.message || "Failed to create bookmark");
+      console.error("Create book error:", err.response?.data || err.message);
+      alert(err.response?.data?.message || "Failed to create book");
     } finally {
       setLoading(false);
     }
@@ -282,9 +274,9 @@ const AddBookmarkModal = ({ open, onClose, folderOptions, onSaved }) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 flex items-start justify-center p-6 overflow-auto">
-      <div className="w-full max-w-5xl rounded-2xl border border-white/10 bg-[#111827] shadow-2xl">
+      <div className="w-full max-w-5xl rounded-2xl border border-white/10 bg-[#4a3f35] shadow-2xl">
         <div className="flex items-center justify-between px-8 py-5 border-b border-white/10">
-          <h3 className="text-xl font-semibold text-white">Add New Bookmark</h3>
+          <h3 className="text-xl font-semibold text-white">Add New Book</h3>
           <button className="p-2 rounded hover:bg-white/10" onClick={onClose}>
             <X className="w-5 h-5 text-white/70" />
           </button>
@@ -294,8 +286,8 @@ const AddBookmarkModal = ({ open, onClose, folderOptions, onSaved }) => {
           <div>
             <label className="text-sm font-semibold text-white/80">Title*</label>
             <input
-              className="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter bookmark title"
+              className="mt-2 w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-orange-400"
+              placeholder="Enter book title"
               value={form.title}
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
             />
@@ -304,7 +296,7 @@ const AddBookmarkModal = ({ open, onClose, folderOptions, onSaved }) => {
           <div>
             <label className="text-sm font-semibold text-white/80">URL*</label>
             <input
-              className="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-orange-400"
               placeholder="https://example.com"
               value={form.url}
               onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
@@ -314,7 +306,7 @@ const AddBookmarkModal = ({ open, onClose, folderOptions, onSaved }) => {
           <div>
             <label className="text-sm font-semibold text-white/80">Description</label>
             <textarea
-              className="mt-2 w-full min-h-[110px] rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full min-h-[110px] rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-orange-400"
               placeholder="Enter a description (optional)"
               value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
@@ -324,8 +316,8 @@ const AddBookmarkModal = ({ open, onClose, folderOptions, onSaved }) => {
           <div>
             <label className="text-sm font-semibold text-white/80">Tags</label>
             <input
-              className="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter tags separated by commas (e.g. music, favorite, important)"
+              className="mt-2 w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-orange-400"
+              placeholder="Enter tags separated by commas (e.g. favorite, reading, important)"
               value={form.tags}
               onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value }))}
             />
@@ -336,8 +328,8 @@ const AddBookmarkModal = ({ open, onClose, folderOptions, onSaved }) => {
             <div>
               <label className="text-sm font-semibold text-white/80">Category</label>
               <input
-                className="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Optional (e.g. Work, Learning)"
+                className="mt-2 w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-orange-400"
+                placeholder="Optional (e.g. Fiction, Learning)"
                 value={form.category}
                 onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
               />
@@ -346,13 +338,13 @@ const AddBookmarkModal = ({ open, onClose, folderOptions, onSaved }) => {
             <div>
               <label className="text-sm font-semibold text-white/80">Folder</label>
               <select
-                className="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-2 w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white outline-none focus:ring-2 focus:ring-orange-400"
                 value={form.folder}
                 onChange={(e) => setForm((f) => ({ ...f, folder: e.target.value }))}
               >
                 <option value="">(No folder)</option>
                 {folderOptions.map((opt) => (
-                  <option key={opt._id} value={opt._id} className="bg-[#111827]">
+                  <option key={opt._id} value={opt._id} className="bg-[#4a3f35]">
                     {opt.label}
                   </option>
                 ))}
@@ -362,18 +354,18 @@ const AddBookmarkModal = ({ open, onClose, folderOptions, onSaved }) => {
 
           <div className="flex justify-end gap-2 pt-3">
             <button
-              className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white"
+              className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white"
               onClick={onClose}
               disabled={loading}
             >
               Cancel
             </button>
             <button
-              className="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold disabled:opacity-60"
+              className="px-6 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold disabled:opacity-60"
               onClick={save}
               disabled={loading}
             >
-              {loading ? "Saving..." : "Save Bookmark"}
+              {loading ? "Saving..." : "Save Book"}
             </button>
           </div>
         </div>
@@ -382,13 +374,13 @@ const AddBookmarkModal = ({ open, onClose, folderOptions, onSaved }) => {
   );
 };
 
-const BookmarkCard = ({ b }) => {
+const BookCard = ({ b }) => {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition shadow-lg p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400" />
+            <span className="inline-block w-2 h-2 rounded-full bg-orange-300" />
             <h4 className="text-white font-semibold truncate">{b.title}</h4>
           </div>
 
@@ -396,7 +388,7 @@ const BookmarkCard = ({ b }) => {
             href={b.url?.startsWith("http") ? b.url : `https://${b.url}`}
             target="_blank"
             rel="noreferrer"
-            className="text-blue-400 hover:text-blue-300 text-sm break-all"
+            className="text-orange-300 hover:text-orange-400 text-sm break-all"
           >
             {b.url}
           </a>
@@ -423,17 +415,16 @@ const BookmarkCard = ({ b }) => {
   );
 };
 
-export default function BookmarksDashboard() {
-  const [bookmarks, setBookmarks] = useState([]);
+export default function BooksDashboard() {
+  const [books, setBooks] = useState([]);
   const [foldersTree, setFoldersTree] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedFolderId, setSelectedFolderId] = useState(null);
 
-  const [openBookmarkModal, setOpenBookmarkModal] = useState(false);
+  const [openBookModal, setOpenBookModal] = useState(false);
   const [openFolderModal, setOpenFolderModal] = useState(false);
   const [folderParentForModal, setFolderParentForModal] = useState(null);
 
-  // ✅ Logout: clear token + go to http://localhost:5173/
   const handleLogout = () => {
     const ok = window.confirm("Are you sure you want to logout?");
     if (!ok) return;
@@ -443,41 +434,38 @@ export default function BookmarksDashboard() {
 
   const loadFolders = async () => {
     const { data } = await API.get("/folders?tree=true");
-    setFoldersTree(dedupeTree(data)); // ✅ dedupe to avoid duplicates in UI
+    setFoldersTree(dedupeTree(data));
   };
 
-  const loadBookmarks = async (params = {}) => {
-    const { data } = await API.get("/bookmarks", { params });
-    setBookmarks(data);
+  const loadBooks = async (params = {}) => {
+    const { data } = await API.get("/books", { params });
+    setBooks(data);
   };
 
   useEffect(() => {
     loadFolders();
-    loadBookmarks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    loadBooks();
   }, []);
 
   useEffect(() => {
     const params = {};
     if (selectedFolderId) params.folder = selectedFolderId;
-    loadBookmarks(params);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    loadBooks(params);
   }, [selectedFolderId]);
 
   const folderOptions = useMemo(() => flattenTreeToOptions(foldersTree), [foldersTree]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return bookmarks;
-
-    return bookmarks.filter((b) => {
+    if (!q) return books;
+    return books.filter((b) => {
       return (
         (b.title || "").toLowerCase().includes(q) ||
         (b.url || "").toLowerCase().includes(q) ||
         (b.tags || []).some((t) => (t || "").toLowerCase().includes(q))
       );
     });
-  }, [bookmarks, search]);
+  }, [books, search]);
 
   const openAddRootFolder = () => {
     setFolderParentForModal(null);
@@ -490,14 +478,12 @@ export default function BookmarksDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0b1220] text-white">
+    <div className="min-h-screen bg-[#3c2f2a] text-white">
       <div className="flex min-h-screen">
         {/* Sidebar */}
-        <aside className="w-[280px] border-r border-white/10 bg-[#0a1324]">
+        <aside className="w-[280px] border-r border-white/10 bg-[#402f25]">
           <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
-            <h1 className="text-xl font-bold">My Bookmarks</h1>
-
-            {/* ✅ Logout */}
+            <h1 className="text-xl font-bold">My Books</h1>
             <button
               onClick={handleLogout}
               className="p-2 rounded-lg hover:bg-white/10"
@@ -514,7 +500,7 @@ export default function BookmarksDashboard() {
               }`}
               onClick={() => setSelectedFolderId(null)}
             >
-              All Bookmarks
+              All Books
             </button>
           </div>
 
@@ -547,7 +533,7 @@ export default function BookmarksDashboard() {
         <main className="flex-1">
           <div className="px-10 py-8">
             <div className="flex items-center justify-between gap-6">
-              <h2 className="text-3xl font-extrabold">All Bookmarks</h2>
+              <h2 className="text-3xl font-extrabold">All Books</h2>
 
               <div className="flex items-center gap-4">
                 <div className="relative">
@@ -555,39 +541,39 @@ export default function BookmarksDashboard() {
                   <input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search bookmarks..."
-                    className="w-[320px] rounded-xl bg-white/5 border border-white/10 pl-10 pr-4 py-3 text-white outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Search books..."
+                    className="w-[320px] rounded-xl bg-white/10 border border-white/20 pl-10 pr-4 py-3 text-white outline-none focus:ring-2 focus:ring-orange-400"
                   />
                 </div>
 
                 <button
-                  onClick={() => setOpenBookmarkModal(true)}
-                  className="rounded-xl bg-blue-600 hover:bg-blue-700 px-5 py-3 font-semibold flex items-center gap-2"
+                  onClick={() => setOpenBookModal(true)}
+                  className="rounded-xl bg-orange-500 hover:bg-orange-600 px-5 py-3 font-semibold flex items-center gap-2"
                 >
-                  <Plus className="w-5 h-5" /> Add Bookmark
+                  <Plus className="w-5 h-5" /> Add Book
                 </button>
               </div>
             </div>
 
             <div className="mt-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               {filtered.map((b) => (
-                <BookmarkCard key={b._id} b={b} />
+                <BookCard key={b._id} b={b} />
               ))}
             </div>
 
             {filtered.length === 0 && (
-              <div className="mt-14 text-center text-white/60">No bookmarks found.</div>
+              <div className="mt-14 text-center text-white/60">No books found.</div>
             )}
           </div>
         </main>
       </div>
 
       {/* Modals */}
-      <AddBookmarkModal
-        open={openBookmarkModal}
-        onClose={() => setOpenBookmarkModal(false)}
+      <AddBookModal
+        open={openBookModal}
+        onClose={() => setOpenBookModal(false)}
         folderOptions={folderOptions}
-        onSaved={(created) => setBookmarks((prev) => [created, ...prev])}
+        onSaved={(created) => setBooks((prev) => [created, ...prev])}
       />
 
       <AddFolderModal
@@ -595,7 +581,7 @@ export default function BookmarksDashboard() {
         onClose={() => setOpenFolderModal(false)}
         parentFolderId={folderParentForModal}
         onCreated={async () => {
-          await loadFolders(); // refresh folder tree + dropdown options
+          await loadFolders();
         }}
       />
     </div>
