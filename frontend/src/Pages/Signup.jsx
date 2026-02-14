@@ -55,7 +55,7 @@ export default function Signup() {
         <input className="mb-3 w-full p-2 border rounded" placeholder="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} />
         <input className="mb-3 w-full p-2 border rounded" placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} />
         <input className="mb-4 w-full p-2 border rounded" placeholder="Confirm Password" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
-        <button className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Sign Up</button>
+        <button className="w-full bg-green-500 text-white p-2 rounded hover:bg-blue-600">Sign Up</button>
         <p className="mt-4 text-center text-gray-600">
           Already have an account? <Link to="/" className="text-blue-500 hover:underline">Login</Link>
         </p>
