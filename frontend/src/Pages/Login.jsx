@@ -37,7 +37,7 @@ export default function Login() {
         className="relative bg-white p-8 rounded shadow-md w-96 z-10"
       >
         <h2 className="text-2xl font-bold mb-6 text-center">
-          Welcome To Booksy
+          Welcome To Booksy The Book Web Page
         </h2>
 
         {message && <p className="text-red-500 mb-4">{message}</p>}
