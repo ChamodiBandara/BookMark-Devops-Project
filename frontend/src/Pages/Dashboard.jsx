@@ -59,7 +59,6 @@ const flattenTreeToOptions = (tree, depth = 0) => {
   return out;
 };
 
-// ✅ frontend safety: dedupe tree by _id (prevents duplicates even if backend sends duplicates)
 const dedupeTree = (nodes) => {
   const seen = new Set();
 
